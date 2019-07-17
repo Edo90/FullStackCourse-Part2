@@ -52,35 +52,42 @@ const App = () => {
         )
     }
 
-    const Statistic = ({ text, value, isPercentageValue }) => {
-        if (isPercentageValue) {
-            return (
-                <>
-                    <span>{text} {value} %</span> <br></br>
-                </>
-            )
+    const Statistic = ({ text, value, havePercentageValue, isDecimal }) => {
+        let valuePercentage = value
+        if (isDecimal) {
+            valuePercentage = Math.round(value * 100) / 100
+            if (havePercentageValue) {
+                valuePercentage = valuePercentage + "%"
+            }
         }
-        else {
-            return (
-                <>
-                    <span>{text} {value}</span> <br></br>
-                </>
-            )
-        }
+
+        return (
+            <>
+                <tr>
+                    <td>{text}</td>
+                    <td>{valuePercentage}</td>
+                </tr>
+            </>
+        )
     }
+
 
     const Statistics = () => {
         calculateAllStatistics()
         if (all > 0) {
             return (
-                <>
-                    <Statistic text="good" value={good}></Statistic>
-                    <Statistic text="neutral" value={neutral}></Statistic>
-                    <Statistic text="bad" value={bad}></Statistic>
-                    <Statistic text="average" value={average}></Statistic>
-                    <Statistic text="positive" value={positive} isPercentageValue={true}></Statistic>
-
-                </>
+                <div>
+                    <table>
+                        <tbody>
+                            <Statistic text="good" value={good}></Statistic>
+                            <Statistic text="neutral" value={neutral}></Statistic>
+                            <Statistic text="bad" value={bad}></Statistic>
+                            <Statistic text="all" value={all}></Statistic>
+                            <Statistic text="average" value={average} isDecimal={true}></Statistic>
+                            <Statistic text="positive" value={positive} havePercentageValue={true} isDecimal={true}></Statistic>
+                        </tbody>
+                    </table>
+                </div>
             )
         } else {
             return (
