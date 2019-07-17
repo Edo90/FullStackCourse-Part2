@@ -8,33 +8,33 @@ const App = () => {
     const [bad, setBad] = useState(0)
     const [average, setAverage] = useState(0)
     const [positive, setPositive] = useState(0)
-    const [all,setAll] = useState(0)
+    const [all, setAll] = useState(0)
 
 
-    const goodClick = () => () => { 
-        setGood(good + 1) 
+    const goodClick = () => () => {
+        setGood(good + 1)
     }
 
-    const neutralClick = () => () => { 
-        setNeutral(neutral + 1) 
+    const neutralClick = () => () => {
+        setNeutral(neutral + 1)
     }
 
-    const badClick = () => () => { 
+    const badClick = () => () => {
         setBad(bad + 1)
     }
 
-    const calculateAllStatistics = () =>{
+    const calculateAllStatistics = () => {
         setAll(good + neutral + bad)
         calculateAverage()
         calculatePositive()
     }
 
     const calculateAverage = () => {
-        setAverage(((good - bad)/all))
+        setAverage(((good - bad) / all))
     }
 
     const calculatePositive = () => {
-        setPositive((good/all)*100)
+        setPositive((good / all) * 100)
     }
     const Button = ({ handleClick, text }) => {
         return (
@@ -44,8 +44,8 @@ const App = () => {
         )
     }
 
-    const Title = ({title}) =>{
-        return(
+    const Title = ({ title }) => {
+        return (
             <>
                 <h1>{title}</h1>
             </>
@@ -54,13 +54,13 @@ const App = () => {
 
     const Statistics = () => {
         calculateAllStatistics()
-        return(
+        return (
             <>
-            <span>good {good}</span> 
-            <br></br> <span>neutral {neutral}</span>
-            <br></br> <span>bad {bad}</span>
-            <br></br> <span>average {average}</span>
-            <br></br> <span>positive {positive}%</span>
+                <span>good {good}</span>
+                <br></br> <span>neutral {neutral}</span>
+                <br></br> <span>bad {bad}</span>
+                <br></br> <span>average {average}</span>
+                <br></br> <span>positive {positive}%</span>
             </>
         )
     }
