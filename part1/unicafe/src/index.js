@@ -54,15 +54,24 @@ const App = () => {
 
     const Statistics = () => {
         calculateAllStatistics()
-        return (
-            <>
-                <span>good {good}</span>
-                <br></br> <span>neutral {neutral}</span>
-                <br></br> <span>bad {bad}</span>
-                <br></br> <span>average {average}</span>
-                <br></br> <span>positive {positive}%</span>
-            </>
-        )
+        if(all > 0){
+            return (
+                <>
+                    <span>good {good}</span>
+                    <br></br> <span>neutral {neutral}</span>
+                    <br></br> <span>bad {bad}</span>
+                    <br></br> <span>average {average}</span>
+                    <br></br> <span>positive {positive}%</span>
+                </>
+            )
+        }else{
+            return(
+                <>
+                    <span>No feedback given</span>
+                </>
+            )
+        }
+        
     }
 
     return (
