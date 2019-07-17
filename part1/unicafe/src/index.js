@@ -52,26 +52,44 @@ const App = () => {
         )
     }
 
-    const Statistics = () => {
-        calculateAllStatistics()
-        if(all > 0){
+    const Statistic = ({ text, value, isPercentageValue }) => {
+        if (isPercentageValue) {
             return (
                 <>
-                    <span>good {good}</span>
-                    <br></br> <span>neutral {neutral}</span>
-                    <br></br> <span>bad {bad}</span>
-                    <br></br> <span>average {average}</span>
-                    <br></br> <span>positive {positive}%</span>
+                    <span>{text} {value} %</span> <br></br>
                 </>
             )
-        }else{
-            return(
+        }
+        else {
+            return (
+                <>
+                    <span>{text} {value}</span> <br></br>
+                </>
+            )
+        }
+    }
+
+    const Statistics = () => {
+        calculateAllStatistics()
+        if (all > 0) {
+            return (
+                <>
+                    <Statistic text="good" value={good}></Statistic>
+                    <Statistic text="neutral" value={neutral}></Statistic>
+                    <Statistic text="bad" value={bad}></Statistic>
+                    <Statistic text="average" value={average}></Statistic>
+                    <Statistic text="positive" value={positive} isPercentageValue={true}></Statistic>
+
+                </>
+            )
+        } else {
+            return (
                 <>
                     <span>No feedback given</span>
                 </>
             )
         }
-        
+
     }
 
     return (
