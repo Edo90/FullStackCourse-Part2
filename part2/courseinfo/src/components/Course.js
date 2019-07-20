@@ -7,8 +7,8 @@ const course = ({course}) =>{
     const parts = course.parts
     return(
         <div>
-            <Header course={course} />
-            <Content course={course} />
+            <Header name={course.name} />
+            <Content parts={parts} />
             <Total parts={parts} />
         </div>
     )

@@ -1,12 +1,13 @@
 import React from 'react'
 
-const Part = (props) => {
+const Part = ({name,exercises}) => {
+  
     return (
-        <>
+        <div>
             <p>
-                {props.part} {props.exercise}
+                {name} {exercises}
             </p>
-        </>
+        </div>
     )
 }
 

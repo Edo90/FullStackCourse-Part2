@@ -1,12 +1,13 @@
 import React from 'react'
 import Part from './Part'
 
-const Content = (props) => {
+const Content = ({ parts }) => {
+
+    const partRow = () => parts.map(part => <Part key={part.id} name={part.name} exercises={part.exercises}></Part>)
+
     return (
         <>
-            <Part part={props.course.parts[0].name} exercise={props.course.parts[0].exercises} />
-            <Part part={props.course.parts[1].name} exercise={props.course.parts[1].exercises} />
-            <Part part={props.course.parts[2].name} exercise={props.course.parts[2].exercises} />
+            {partRow()}
         </>
     )
 }
