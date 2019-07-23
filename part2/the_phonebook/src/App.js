@@ -9,7 +9,14 @@ const App = () => {
   const addNewName = (event) => {
     event.preventDefault()
 
-    if (newName === "") return;
+    if (newName === "") {
+      alert(`you shouldn't add blank spaces`)
+      return;
+    }
+    else if (isNewNameAdded({ newName })) {
+      alert(`${newName} is already added to phoneBook`)
+      return;
+    }
 
     const person = {
       name: newName
@@ -25,6 +32,9 @@ const App = () => {
 
   const getPeople = persons.map(person => <p key={person.name}>{person.name}</p>)
 
+  const isNewNameAdded = ({ newName }) => {
+    return persons.filter(person => person.name === newName).length > 0
+  }
 
   return (
     <div>
