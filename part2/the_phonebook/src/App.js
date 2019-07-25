@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
+    { name: 'Arto Hellas', phoneNumber: '040-123456' },
+    { name: 'Ada Lovelace', phoneNumber: '39-44-5323523' },
+    { name: 'Dan Abramov', phoneNumber: '12-43-234345' },
+    { name: 'Mary Poppendieck', phoneNumber: '39-23-6423122' }
   ])
   const [newName, setNewName] = useState('Martin Fowler')
 
@@ -48,13 +48,8 @@ const App = () => {
   }
 
   const getPeopleFiltered = () => {
-    if (filterName.trim().length > 0) {
-      const peopleFiltered = persons.filter(person => person.name.toLowerCase().includes(filterName.toLowerCase()))
-      return peopleFiltered.map(person => <p key={person.name}><span>{person.name}</span> <span>{person.phoneNumber}</span></p>)
-    }
-    else {
-      return persons.map(person => <p key={person.name}>{person.name} <span>{person.phoneNumber}</span></p>)
-    }
+    const peopleFiltered = persons.filter(person => person.name.toLowerCase().includes(filterName.toLowerCase()))
+    return peopleFiltered.map(person => <p key={person.name}><span>{person.name}</span> <span>{person.phoneNumber}</span></p>)
   }
 
   const isNewNameAdded = ({ newName }) => {
