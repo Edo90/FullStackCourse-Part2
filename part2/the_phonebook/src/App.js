@@ -1,4 +1,8 @@
 import React, { useState } from 'react'
+import SearchFilter from './components/SearchFilter'
+import Title from './components/Title'
+import PersonForm from './components/PersonForm'
+import People from './components/People'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -32,6 +36,7 @@ const App = () => {
 
     setPersons(persons.concat(person))
     setNewName('')
+    setNewPhoneNumber('')
   }
 
   const handleNameChange = (event) => {
@@ -58,23 +63,12 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
-      <div>
-        filter shown with: <input value={filterName} onChange={handleFiltering} />
-      </div>
-      <form onSubmit={addNewName}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange} />
-        </div>
-        <div>
-          number: <input value={newPhoneNumber} onChange={handleNumberChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      {getPeopleFiltered()}
+      <Title title="PhoneBook"></Title>
+      <SearchFilter filterValue={filterName} handleFilter={handleFiltering}></SearchFilter>
+      <PersonForm addNewName={addNewName} handleNameChange={handleNameChange} 
+      newName={newName} handleNumberChange={handleNumberChange} newPhoneNumber={newPhoneNumber}></PersonForm>
+      <Title title="Numbers"></Title>
+      <People getPeopleFiltered = {getPeopleFiltered()}></People>
     </div>
   )
 }
