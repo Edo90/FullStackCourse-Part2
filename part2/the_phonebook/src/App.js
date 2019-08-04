@@ -1,16 +1,21 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import SearchFilter from './components/SearchFilter'
 import Title from './components/Title'
 import PersonForm from './components/PersonForm'
 import People from './components/People'
+import axios from 'axios'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', phoneNumber: '040-123456' },
-    { name: 'Ada Lovelace', phoneNumber: '39-44-5323523' },
-    { name: 'Dan Abramov', phoneNumber: '12-43-234345' },
-    { name: 'Mary Poppendieck', phoneNumber: '39-23-6423122' }
-  ])
+
+  useEffect(() => {
+    axios.get("http://localhost:3001/persons")
+      .then(response => {
+        setPersons(response.data)
+      })
+
+  }, [])
+
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('Martin Fowler')
 
   const [newPhoneNumber, setNewPhoneNumber] = useState('123-123-1232')
@@ -54,7 +59,7 @@ const App = () => {
 
   const getPeopleFiltered = () => {
     const peopleFiltered = persons.filter(person => person.name.toLowerCase().includes(filterName.toLowerCase()))
-    return peopleFiltered.map(person => <p key={person.name}><span>{person.name}</span> <span>{person.phoneNumber}</span></p>)
+    return peopleFiltered.map(person => <p key={person.name}><span>{person.name}</span> <span>{person.number}</span></p>)
   }
 
   const isNewNameAdded = ({ newName }) => {
@@ -65,10 +70,10 @@ const App = () => {
     <div>
       <Title title="PhoneBook"></Title>
       <SearchFilter filterValue={filterName} handleFilter={handleFiltering}></SearchFilter>
-      <PersonForm addNewName={addNewName} handleNameChange={handleNameChange} 
-      newName={newName} handleNumberChange={handleNumberChange} newPhoneNumber={newPhoneNumber}></PersonForm>
+      <PersonForm addNewName={addNewName} handleNameChange={handleNameChange}
+        newName={newName} handleNumberChange={handleNumberChange} newPhoneNumber={newPhoneNumber}></PersonForm>
       <Title title="Numbers"></Title>
-      <People getPeopleFiltered = {getPeopleFiltered()}></People>
+      <People getPeopleFiltered={getPeopleFiltered()}></People>
     </div>
   )
 }
