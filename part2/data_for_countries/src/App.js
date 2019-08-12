@@ -6,6 +6,8 @@ import CountryDetail from './components/CountryDetail'
 function App() {
   const [countries, setCountries] = useState([])
   const [filterValue, setFilterValue] = useState([])
+  const [showDetail, setShowDetail] = useState(false)
+  const [countryDetail, setCountryDetail] = useState({})
 
   useEffect(() => {
     axios.get("https://restcountries.eu/rest/v2/all")
@@ -15,35 +17,58 @@ function App() {
   }, [])
 
   const getListOfCountries = () => {
+    if (showDetail) {
 
-    if (countries.length > 0) {
+      return showCountryDetail(countryDetail)
+    } else {
 
       if (filterValue.length === 0) {
-        return "To filter just write something down in the filter box"
+        return <div>To filter just write something down in the filter box</div>
       }
 
       const countriesFiltered = getCountriesFiltered()
       if (countriesFiltered.length > 10) {
-        return "Too many matches, specify another filter"
+        return <div>Too many matches, specify another filter</div>
       } else if (countriesFiltered.length === 1) {
         const firstElement = 0
-        return <CountryDetail country={countriesFiltered[firstElement]}></CountryDetail>
+        const country = countriesFiltered[firstElement]
+        setCountryDetail(country)
+        setShowDetail(true)
       }
       else if (countriesFiltered.length === 0) {
-        return "No matches found"
+        return <div>Too many matches, specify another filter</div>
       } else {
-        return countriesFiltered.map(country => <span key={country.name}>{country.name} <br></br></span>)
+        return countriesFiltered.map(function (country) {
+          return <div key={country.name}>
+            <span >{country.name}</span>
+            <button onClick={() => handleClick(country)}>Show</button>
+          </div>
+        }
+
+        )
       }
+
     }
+
+  }
+
+  const showCountryDetail = (country) => {
+    debugger
+    return <CountryDetail country={country}></CountryDetail>
+  }
+
+  const handleClick = (country) => {
+    setShowDetail(true)
+    setCountryDetail(country)
   }
 
   const getCountriesFiltered = () => {
     return countries.filter(country => country.name.toLowerCase().includes(filterValue.toLowerCase()))
   }
 
-
   const handleFilterChange = (event) => {
     setFilterValue(event.target.value)
+    setShowDetail(false)
   }
 
   return (
@@ -52,7 +77,6 @@ function App() {
       {getListOfCountries()}
     </div>
   );
-
 }
 
 export default App;
