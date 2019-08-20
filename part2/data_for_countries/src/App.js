@@ -7,7 +7,9 @@ function App() {
   const [countries, setCountries] = useState([])
   const [filterValue, setFilterValue] = useState([])
   const [showDetail, setShowDetail] = useState(false)
+  const [busyOnCall, setBusyOnCall] = useState(false)
   const [countryDetail, setCountryDetail] = useState({})
+  const [countryWeather, setCountryWeather] = useState({})
 
   useEffect(() => {
     axios.get("https://restcountries.eu/rest/v2/all")
@@ -18,10 +20,9 @@ function App() {
 
   const getListOfCountries = () => {
     if (showDetail) {
-
-      return showCountryDetail(countryDetail)
-    } else {
-
+      return showCountryDetail(countryDetail, countryWeather)
+    }
+    else {
       if (filterValue.length === 0) {
         return <div>To filter just write something down in the filter box</div>
       }
@@ -29,15 +30,18 @@ function App() {
       const countriesFiltered = getCountriesFiltered()
       if (countriesFiltered.length > 10) {
         return <div>Too many matches, specify another filter</div>
-      } else if (countriesFiltered.length === 1) {
+      }
+      else if (countriesFiltered.length === 1) {
+
         const firstElement = 0
         const country = countriesFiltered[firstElement]
-        setCountryDetail(country)
-        setShowDetail(true)
+        getCountryWeather(country)
+
       }
       else if (countriesFiltered.length === 0) {
         return <div>Too many matches, specify another filter</div>
-      } else {
+      }
+      else {
         return countriesFiltered.map(function (country) {
           return <div key={country.name}>
             <span >{country.name}</span>
@@ -52,14 +56,33 @@ function App() {
 
   }
 
-  const showCountryDetail = (country) => {
-    debugger
-    return <CountryDetail country={country}></CountryDetail>
+  const showCountryDetail = (country, weather) => {
+    return <CountryDetail country={country} weather={weather}></CountryDetail>
   }
 
   const handleClick = (country) => {
-    setShowDetail(true)
-    setCountryDetail(country)
+    getCountryWeather(country)
+  }
+
+  const getCountryWeather = async (country) => {
+    // busy on call was made due to the fact that the axios get request
+    // was called multiple times because of the rendering component.
+    if (!busyOnCall) {
+      setBusyOnCall(true)
+      await axios.get("https://api.apixu.com/v1/current.json?key=6e1fb410b346427696f193722191808&q=" + country.name)
+        .then(response => {
+          setCountryWeather(response.data)
+          setCountryDetail(country)
+          setShowDetail(true)
+          setBusyOnCall(false)
+        })
+        .catch(err => {
+          setBusyOnCall(false)
+          console.log(err)
+        }
+
+        )
+    }
   }
 
   const getCountriesFiltered = () => {
