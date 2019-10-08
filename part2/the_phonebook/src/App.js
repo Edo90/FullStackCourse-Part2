@@ -3,23 +3,21 @@ import SearchFilter from './components/SearchFilter'
 import Title from './components/Title'
 import PersonForm from './components/PersonForm'
 import People from './components/People'
-import axios from 'axios'
+import phonebooks from './services/phonebooks'
 
 const App = () => {
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons")
-      .then(response => {
-        setPersons(response.data)
-      })
-
+    phonebooks
+    .getAll()
+    .then(persons => {
+      setPersons(persons)
+    })
   }, [])
 
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('Martin Fowler')
-
   const [newPhoneNumber, setNewPhoneNumber] = useState('123-123-1232')
-
   const [filterName, setFilterName] = useState('')
 
   const addNewName = (event) => {
@@ -36,12 +34,21 @@ const App = () => {
 
     const person = {
       name: newName,
-      phoneNumber: newPhoneNumber
+      number: newPhoneNumber
     }
 
-    setPersons(persons.concat(person))
+    phonebooks.create(person).then(
+      reponse => {
+        setPersons(persons.concat(person))
+        clearFields()
+      }
+    )
+    
+  }
+
+  const clearFields = () =>{
     setNewName('')
-    setNewPhoneNumber('')
+    setNewPhoneNumber('')    
   }
 
   const handleNameChange = (event) => {
@@ -70,8 +77,11 @@ const App = () => {
     <div>
       <Title title="PhoneBook"></Title>
       <SearchFilter filterValue={filterName} handleFilter={handleFiltering}></SearchFilter>
-      <PersonForm addNewName={addNewName} handleNameChange={handleNameChange}
-        newName={newName} handleNumberChange={handleNumberChange} newPhoneNumber={newPhoneNumber}></PersonForm>
+      <PersonForm addNewName={addNewName} 
+                  handleNameChange={handleNameChange}
+                  newName={newName} 
+                  handleNumberChange={handleNumberChange} 
+                  newPhoneNumber={newPhoneNumber}></PersonForm>
       <Title title="Numbers"></Title>
       <People getPeopleFiltered={getPeopleFiltered()}></People>
     </div>
