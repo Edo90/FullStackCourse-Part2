@@ -3,15 +3,19 @@ import SearchFilter from './components/SearchFilter'
 import Title from './components/Title'
 import PersonForm from './components/PersonForm'
 import People from './components/People'
-import phonebooks from './services/phonebooks'
+import phonebookService from './services/phonebooks'
+import Person from './components/Person'
 
 const App = () => {
 
   useEffect(() => {
-    phonebooks
+    phonebookService
     .getAll()
     .then(persons => {
       setPersons(persons)
+    })
+    .catch(error => {
+      alert(`Unable to get all People from phonebook`)
     })
   }, [])
 
@@ -37,12 +41,14 @@ const App = () => {
       number: newPhoneNumber
     }
 
-    phonebooks.create(person).then(
+    phonebookService.create(person).then(
       reponse => {
         setPersons(persons.concat(person))
         clearFields()
       }
-    )
+    ).catch(error => {
+      alert(`Unable to create ${person.name}`)
+    })
     
   }
 
@@ -61,12 +67,26 @@ const App = () => {
 
   const handleFiltering = (event) => {
     setFilterName(event.target.value)
+  }
 
+  const deletePersonById = (person) => {
+    if(window.confirm(`Are you sure you want to delete ${person.name}?`)){
+        phonebookService.deletePerson(person.id)
+        .then(response => {
+          getPeopleFiltered()
+        })
+        .catch(error => {
+          alert(`Unable to delete '${person.name}'`)
+        })
+    }
+
+    
   }
 
   const getPeopleFiltered = () => {
     const peopleFiltered = persons.filter(person => person.name.toLowerCase().includes(filterName.toLowerCase()))
-    return peopleFiltered.map(person => <p key={person.name}><span>{person.name}</span> <span>{person.number}</span></p>)
+    
+    return peopleFiltered.map(person => <Person key={person.id} person={person} handlePersonDelete={deletePersonById}></Person>)
   }
 
   const isNewNameAdded = ({ newName }) => {
