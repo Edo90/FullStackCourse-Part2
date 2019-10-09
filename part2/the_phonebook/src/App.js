@@ -27,14 +27,34 @@ const App = () => {
   const addNewName = (event) => {
     event.preventDefault()
 
-    if (newName === "") {
+    if (newName === "" && newPhoneNumber === "") {
       alert(`you shouldn't add blank spaces`)
       return;
     }
-    else if (isNewNameAdded({ newName })) {
-      alert(`${newName} is already added to phoneBook`)
-      return;
+
+    const existingPerson = persons.find(p => p.name === newName)
+    if(existingPerson !== undefined && window.confirm(`${newName} is already added to phonebook, do you want to replace old number with the new one?`))
+    {
+      const updatedPerson = {...existingPerson,number: newPhoneNumber}
+      phonebookService.updatePerson(updatedPerson)
+        .then(response => {
+         setPersons(persons.map(person => person.id !== existingPerson.id ? person : response))
+         clearFields()        
+        })
+        .catch(error => {
+          alert(`${newName} couldn't be updated`)
+        })
+        return;
     }
+
+    // else if (isNewNameAdded({ newName })) {
+    //   if())
+    //   {
+    //     const person = persons.find(p => p.name === newName)
+    //   }else{
+    //     return;
+    //   }
+    // }
 
     const person = {
       name: newName,
@@ -42,8 +62,8 @@ const App = () => {
     }
 
     phonebookService.create(person).then(
-      reponse => {
-        setPersons(persons.concat(person))
+      personResult => {
+        setPersons(persons.concat(personResult))
         clearFields()
       }
     ).catch(error => {
@@ -73,7 +93,7 @@ const App = () => {
     if(window.confirm(`Are you sure you want to delete ${person.name}?`)){
         phonebookService.deletePerson(person.id)
         .then(response => {
-          getPeopleFiltered()
+          setPersons(persons.filter(p => p.id !== person.id))
         })
         .catch(error => {
           alert(`Unable to delete '${person.name}'`)
@@ -87,10 +107,6 @@ const App = () => {
     const peopleFiltered = persons.filter(person => person.name.toLowerCase().includes(filterName.toLowerCase()))
     
     return peopleFiltered.map(person => <Person key={person.id} person={person} handlePersonDelete={deletePersonById}></Person>)
-  }
-
-  const isNewNameAdded = ({ newName }) => {
-    return persons.filter(person => person.name === newName).length > 0
   }
 
   return (
