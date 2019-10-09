@@ -47,15 +47,6 @@ const App = () => {
         return;
     }
 
-    // else if (isNewNameAdded({ newName })) {
-    //   if())
-    //   {
-    //     const person = persons.find(p => p.name === newName)
-    //   }else{
-    //     return;
-    //   }
-    // }
-
     const person = {
       name: newName,
       number: newPhoneNumber
