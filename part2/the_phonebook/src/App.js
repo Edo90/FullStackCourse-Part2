@@ -113,7 +113,7 @@ const App = () => {
           setNotificationTimeOut()
         })
         .catch(error => {
-          setNotificationMessage(`Unable to delete '${person.name}'`)
+          setNotificationMessage(`Information of '${person.name}' have already been deleted`)
           setNotificationTimeOut()
           setIsError(true)
         })
