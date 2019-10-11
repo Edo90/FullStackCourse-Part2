@@ -5,6 +5,8 @@ import PersonForm from './components/PersonForm'
 import People from './components/People'
 import phonebookService from './services/phonebooks'
 import Person from './components/Person'
+import Notification from './components/Notification'
+import '../src/index.css'
 
 const App = () => {
 
@@ -15,7 +17,7 @@ const App = () => {
       setPersons(persons)
     })
     .catch(error => {
-      alert(`Unable to get all People from phonebook`)
+      setNotificationMessage(`Unable to get all People from phonebook`)
     })
   }, [])
 
@@ -23,15 +25,28 @@ const App = () => {
   const [newName, setNewName] = useState('Martin Fowler')
   const [newPhoneNumber, setNewPhoneNumber] = useState('123-123-1232')
   const [filterName, setFilterName] = useState('')
+  const [notificationMessage,setNotificationMessage] = useState(null)
+  const [isError, setIsError] = useState(false)
+  
+  const setNotificationTimeOut = () => {
+    
+    setTimeout(() => {
+      setNotificationMessage(null)
+      setIsError(false)
+    }, 3000);
+    return;
+  }
 
   const addNewName = (event) => {
     event.preventDefault()
 
     if (newName === "" && newPhoneNumber === "") {
-      alert(`you shouldn't add blank spaces`)
+      setNotificationMessage(`you shouldn't add blank spaces`)
+      setIsError(true)
+      setNotificationTimeOut()
       return;
     }
-
+    
     const existingPerson = persons.find(p => p.name === newName)
     if(existingPerson !== undefined && window.confirm(`${newName} is already added to phonebook, do you want to replace old number with the new one?`))
     {
@@ -39,10 +54,14 @@ const App = () => {
       phonebookService.updatePerson(updatedPerson)
         .then(response => {
          setPersons(persons.map(person => person.id !== existingPerson.id ? person : response))
-         clearFields()        
+         clearFields()
+         setNotificationMessage(`${newName} updated succesfully`)    
+         setNotificationTimeOut()    
         })
         .catch(error => {
-          alert(`${newName} couldn't be updated`)
+          setNotificationMessage(`${newName} couldn't be updated`)
+          setIsError(true)
+          setNotificationTimeOut()
         })
         return;
     }
@@ -56,9 +75,13 @@ const App = () => {
       personResult => {
         setPersons(persons.concat(personResult))
         clearFields()
+        setNotificationMessage(`created ${person.name} succesfully`)    
+        setNotificationTimeOut()    
       }
     ).catch(error => {
-      alert(`Unable to create ${person.name}`)
+      setNotificationMessage(`Unable to create ${person.name}`)
+      setIsError(true)
+      setNotificationTimeOut()
     })
     
   }
@@ -66,6 +89,7 @@ const App = () => {
   const clearFields = () =>{
     setNewName('')
     setNewPhoneNumber('')    
+    setIsError(false)
   }
 
   const handleNameChange = (event) => {
@@ -85,9 +109,13 @@ const App = () => {
         phonebookService.deletePerson(person.id)
         .then(response => {
           setPersons(persons.filter(p => p.id !== person.id))
+          setNotificationMessage(`delete of '${person.name}' succesful `)
+          setNotificationTimeOut()
         })
         .catch(error => {
-          alert(`Unable to delete '${person.name}'`)
+          setNotificationMessage(`Unable to delete '${person.name}'`)
+          setNotificationTimeOut()
+          setIsError(true)
         })
     }
 
@@ -100,9 +128,16 @@ const App = () => {
     return peopleFiltered.map(person => <Person key={person.id} person={person} handlePersonDelete={deletePersonById}></Person>)
   }
 
+  const showNotification = () =>{
+    if(notificationMessage !== null){
+       return <Notification notificationMessage={notificationMessage} isError={isError}></Notification>
+    }
+  }
+
   return (
     <div>
       <Title title="PhoneBook"></Title>
+      {showNotification()}
       <SearchFilter filterValue={filterName} handleFilter={handleFiltering}></SearchFilter>
       <PersonForm addNewName={addNewName} 
                   handleNameChange={handleNameChange}
